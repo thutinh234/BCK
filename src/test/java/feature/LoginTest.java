@@ -1,5 +1,6 @@
 package feature;
 
+import action.InventoryAction;
 import action.LoginAction;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

@@ -18,11 +18,17 @@ public class InventoryPage extends BasePage {
         super(driver);
     }
 
-    //  Add to cart theo tên sản phẩm
-    public void clickAddToCart(String productName1) {
-        click(addToCartItem1);
+    //  Click button
+    public void clickButton(String productName, String action) {
+        By btn = By.xpath("//div[text()='" + productName + "']" +
+                "/ancestor::div[@class='inventory_item']" +
+                "//button[contains(@id,'" + action + "')]");
+        click(btn);
     }
-
+    // Add to cart
+    public void addToCart(String productName) {
+        clickButton(productName, "add-to-cart");
+    }
     //  Remove
     public void clickRemove(String productName) {
         By btnRemove = By.xpath("//div[text()='" + productName + "']/ancestor::div[@class='inventory_item']//button[text()='Remove']");
@@ -33,6 +39,13 @@ public class InventoryPage extends BasePage {
     public void openProductDetail(String productName) {
         By product = By.xpath("//div[text()='" + productName + "']");
         click(product);
+    }
+    public boolean isRemoveButtonDisplayed(String productName) {
+        By removeBtn = By.xpath("//div[text()='" + productName + "']" +
+                "/ancestor::div[@class='inventory_item']" +
+                "//button[contains(@id,'remove')]");
+
+        return driver.findElements(removeBtn).size() > 0;
     }
 
     //  Cart icon

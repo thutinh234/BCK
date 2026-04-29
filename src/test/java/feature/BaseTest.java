@@ -1,11 +1,13 @@
-package feature;
 
+package feature;
+import action.LoginAction;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 
 public class BaseTest {
-
     protected WebDriver driver;
 
     @BeforeClass
@@ -21,8 +23,6 @@ public class BaseTest {
 
     @AfterClass
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+        driver.quit();
     }
 }

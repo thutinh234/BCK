@@ -11,8 +11,9 @@ public class InventoryAction {
         this.inventoryPage = new InventoryPage(driver);
     }
 
+
     public void addProductToCart(String productName) {
-        inventoryPage.clickAddToCart(productName);
+        inventoryPage.addToCart(productName);
     }
 
     public void removeProduct(String productName) {
@@ -22,7 +23,9 @@ public class InventoryAction {
     public void clickProduct(String productName) {
         inventoryPage.openProductDetail(productName);
     }
-
+    public boolean isRemoveButtonDisplayed(String productName) {
+        return inventoryPage.isRemoveButtonDisplayed(productName);
+    }
     public int getCartCount() {
         return inventoryPage.getCartBadgeCount();
     }
