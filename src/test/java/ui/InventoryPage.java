@@ -2,7 +2,9 @@ package ui;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class InventoryPage extends BasePage {
     private static By addToCartItem1 = By.xpath("//div[text()='Sauce Labs Backpack']/ancestor::div[@class='inventory_item_description']//button");
@@ -13,7 +15,7 @@ public class InventoryPage extends BasePage {
     private static By sortByNameZA=By.xpath("//option[@value='za']");
     private static By sortByPriceLowToHigh=By.xpath("//option[@value='lohi']");
     private static By sortByPriceHighToLow=By.xpath("//option[@value='hilo']");
-
+    private static By cartBadge = By.className("shopping_cart_badge");
     public InventoryPage(WebDriver driver) {
         super(driver);
     }
@@ -35,6 +37,7 @@ public class InventoryPage extends BasePage {
         click(btnRemove);
     }
 
+
     //  Click product
     public void openProductDetail(String productName) {
         By product = By.xpath("//div[text()='" + productName + "']");
@@ -47,6 +50,12 @@ public class InventoryPage extends BasePage {
 
         return driver.findElements(removeBtn).size() > 0;
     }
+    public boolean isAddToCartButtonDisplayed(String productName) {
+        By addBtn = By.xpath("//div[text()='" + productName + "']" +
+                "/ancestor::div[@class='inventory_item']" +
+                "//button[contains(@id,'add-to-cart')]");
+        return driver.findElements(addBtn).size() > 0;
+    }
 
     //  Cart icon
     public void clickCartIcon() {
@@ -55,8 +64,12 @@ public class InventoryPage extends BasePage {
 
     //  Cart badge
     public int getCartBadgeCount() {
-        String count = driver.findElement(By.className("shopping_cart_badge")).getText();
-        return Integer.parseInt(count);
+        List<WebElement> badges = driver.findElements(cartBadge);
+
+        if (badges.isEmpty()) {
+            return 0;
+        }
+        return Integer.parseInt(badges.get(0).getText());
     }
 }
 

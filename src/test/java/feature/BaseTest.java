@@ -18,11 +18,16 @@ public class BaseTest {
 
     @BeforeMethod
     public void openUrl() {
+        if (driver == null) {
+            driver = new ChromeDriver();
+        }
+        driver.manage().deleteAllCookies();
         driver.get("https://www.saucedemo.com/");
     }
-
     @AfterClass
     public void tearDown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
