@@ -59,7 +59,7 @@ public class InventoryTest extends BaseTest {
         // verify = 2
         Assert.assertEquals(inventoryAction.getCartCount(), 2, "Cart count after add is wrong");
 
-        // remove 1 item (bạn sẽ cần thêm hàm remove)
+        // remove 1 item
         inventoryAction.removeProduct("Sauce Labs Backpack");
 
         // verify = 1
