@@ -3,6 +3,7 @@ package ui;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ public class InventoryPage extends BasePage {
     private static By sortByNameZA=By.xpath("//option[@value='za']");
     private static By sortByPriceLowToHigh=By.xpath("//option[@value='lohi']");
     private static By sortByPriceHighToLow=By.xpath("//option[@value='hilo']");
+    private By sortDropdown = By.className("product_sort_container");
+    private By productNames = By.className("inventory_item_name");
+    private By productPrices = By.className("inventory_item_price");
     private static By cartBadge = By.className("shopping_cart_badge");
     public InventoryPage(WebDriver driver) {
         super(driver);
@@ -70,6 +74,33 @@ public class InventoryPage extends BasePage {
             return 0;
         }
         return Integer.parseInt(badges.get(0).getText());
+    }
+    public List<String> getProductNames() {
+        return driver.findElements(productNames)
+                .stream()
+                .map(e -> e.getText())
+                .toList();
+    }
+    public List<Double> getProductPrices() {
+        return driver.findElements(productPrices)
+                .stream()
+                .map(e -> Double.parseDouble(e.getText().replace("$", "")))
+                .toList();
+    }
+    public void selectSort(String option) {
+        Select select = new Select(driver.findElement(sortDropdown));
+        select.selectByVisibleText(option);
+    }
+    public String getPriceByProductName(String productName) {
+        List<WebElement> items = driver.findElements(By.className("inventory_item"));
+
+        for (WebElement item : items) {
+            String name = item.findElement(By.className("inventory_item_name")).getText();
+            if (name.equals(productName)) {
+                return item.findElement(By.className("inventory_item_price")).getText();
+            }
+        }
+        return null;
     }
 }
 

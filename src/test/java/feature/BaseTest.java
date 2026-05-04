@@ -1,6 +1,7 @@
 
 package feature;
 import action.LoginAction;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,27 +13,6 @@ import org.testng.annotations.BeforeMethod;
 public class BaseTest {
     protected WebDriver driver;
 
-//    @BeforeClass
-//    public void setup() {
-//        driver = new ChromeDriver();
-//        driver.manage().window().maximize();
-//    }
-//
-//    @BeforeMethod
-//    public void openUrl() {
-//        if (driver == null) {
-//            driver = new ChromeDriver();
-//        }
-//        driver.manage().deleteAllCookies();
-//        driver.get("https://www.saucedemo.com/");
-//    }
-//    @AfterClass
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//    }
-
     @BeforeClass
     public void setup() {
         ChromeOptions options = new ChromeOptions();
@@ -43,8 +23,11 @@ public class BaseTest {
     }
 
     @BeforeMethod
-    public void openUrl() {
+    public void resetState() {
         driver.get("https://www.saucedemo.com/");
+        driver.manage().deleteAllCookies();
+        ((JavascriptExecutor) driver).executeScript("window.localStorage.clear();");
+        ((JavascriptExecutor) driver).executeScript("window.sessionStorage.clear();");
         driver.navigate().refresh();
     }
 

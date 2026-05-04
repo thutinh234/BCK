@@ -8,6 +8,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ui.ProductDetailPage;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class InventoryTest extends BaseTest {
 
     LoginAction loginAction;
@@ -71,4 +75,58 @@ public class InventoryTest extends BaseTest {
         // verify = 0
         Assert.assertEquals(inventoryAction.getCartCount(), 0, "Cart should be empty");
     }
+    @Test
+    public void verifySortNameAZ() {
+        InventoryAction action = new InventoryAction(driver);
+
+        action.sortBy("Name (A to Z)");
+
+        List<String> actual = action.getNames();
+
+        List<String> expected = new ArrayList<>(actual);
+        Collections.sort(expected);
+
+        Assert.assertEquals(actual, expected,
+                "Sort Name A-Z failed. Actual: " + actual + " | Expected: " + expected);
+    }
+    @Test
+    public void verifySortNameZA() {
+        InventoryAction action = new InventoryAction(driver);
+
+        action.sortBy("Name (Z to A)");
+
+        List<String> actual = action.getNames();
+
+        List<String> expected = new ArrayList<>(actual);
+        expected.sort(Collections.reverseOrder());
+
+        Assert.assertEquals(actual, expected);
+    }
+    @Test
+    public void verifySortPriceLowToHigh() {
+        InventoryAction action = new InventoryAction(driver);
+
+        action.sortBy("Price (low to high)");
+
+        List<Double> actual = action.getPrices();
+
+        List<Double> expected = new ArrayList<>(actual);
+        Collections.sort(expected);
+
+        Assert.assertEquals(actual, expected);
+    }
+    @Test
+    public void verifySortPriceHighToLow() {
+        InventoryAction action = new InventoryAction(driver);
+
+        action.sortBy("Price (high to low)");
+
+        List<Double> actual = action.getPrices();
+
+        List<Double> expected = new ArrayList<>(actual);
+        expected.sort(Collections.reverseOrder());
+
+        Assert.assertEquals(actual, expected);
+    }
+
 }
