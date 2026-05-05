@@ -24,4 +24,7 @@ public class BasePage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).clear();
         driver.findElement(locator).sendKeys(text);
     }
+    public String getText(By locator) {
+        return driver.findElement(locator).getText();
+    }
 }

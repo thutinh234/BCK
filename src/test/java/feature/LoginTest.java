@@ -58,4 +58,9 @@ public class LoginTest extends BaseTest {
 
         Assert.assertTrue(error.contains("Password is required"));
     }
+    @Test
+    public void testLockedUser() {
+        loginAction.login("locked_out_user", "secret_sauce");
+        Assert.assertTrue(loginAction.getErrorMessage().contains("locked out"));
+    }
 }
