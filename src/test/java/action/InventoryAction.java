@@ -1,22 +1,21 @@
 package action;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import ui.CartPage;
-import ui.InventoryPage;
-import ui.ProductDetailPage;
+import ui.CartPageUI;
+import ui.InventoryPageUI;
+import ui.ProductDetailPageUI;
 
 import java.util.List;
 
 public class InventoryAction {
     private WebDriver driver;
-    private InventoryPage inventoryPage;
-    private CartPage cartPage;
+    private InventoryPageUI inventoryPage;
+    private CartPageUI cartPage;
 
     public InventoryAction(WebDriver driver) {
         this.driver = driver;
-        this.inventoryPage = new InventoryPage(driver);
-        cartPage = new CartPage(driver);
+        this.inventoryPage = new InventoryPageUI(driver);
+        cartPage = new CartPageUI(driver);
     }
 
     public void addProductToCart(String productName) {
@@ -34,9 +33,9 @@ public class InventoryAction {
         return inventoryPage.isAddToCartButtonDisplayed(productName);
     }
 
-    public ProductDetailPage clickProduct(String productName) {
+    public ProductDetailPageUI clickProduct(String productName) {
         inventoryPage.openProductDetail(productName);
-        return new ProductDetailPage(driver);
+        return new ProductDetailPageUI(driver);
     }
 
 

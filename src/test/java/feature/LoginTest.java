@@ -63,4 +63,28 @@ public class LoginTest extends BaseTest {
         loginAction.login("locked_out_user", "secret_sauce");
         Assert.assertTrue(loginAction.getErrorMessage().contains("locked out"));
     }
+    @Test
+    public void testPerformanceUser() {
+        loginAction.login("performance_glitch_user", "secret_sauce");
+        Assert.assertTrue(driver.getCurrentUrl().contains("inventory"));
+    }
+    @Test
+    public void testSQLInjection(){
+        LoginAction action = new LoginAction(driver);
+
+        action.login("' OR 1=1", "123456");
+
+        String error = action.getErrorMessage();
+
+        Assert.assertTrue(
+                error.contains("Username and password do not match"),
+                "System may be vulnerable to SQL Injection!"
+        );
+
+        Assert.assertFalse(
+                driver.getCurrentUrl().contains("inventory"),
+                "SQL Injection bypassed login!"
+        );
+    }
+
 }

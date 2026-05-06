@@ -1,16 +1,16 @@
 package action;
 
 import org.openqa.selenium.WebDriver;
-import ui.CheckoutPage;
+import ui.CheckoutPageUI;
 
 import java.util.List;
 
 public class CheckoutAction {
 
-    private CheckoutPage checkoutPage;
+    private CheckoutPageUI checkoutPage;
 
     public CheckoutAction(WebDriver driver) {
-        checkoutPage = new CheckoutPage(driver);
+        checkoutPage = new CheckoutPageUI(driver);
     }
 
     public void fillInformation(String first, String last, String zip) {

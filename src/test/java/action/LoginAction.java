@@ -1,14 +1,14 @@
 package action;
 
 import org.openqa.selenium.WebDriver;
-import ui.LoginPage;
+import ui.LoginPageUI;
 
 public class LoginAction {
 
-    private LoginPage loginPage;
+    private LoginPageUI loginPage;
 
     public LoginAction(WebDriver driver) {
-        this.loginPage = new LoginPage(driver);
+        this.loginPage = new LoginPageUI(driver);
     }
 
     public void login(String user, String pass) {

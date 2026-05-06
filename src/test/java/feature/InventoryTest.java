@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ui.ProductDetailPage;
+import ui.ProductDetailPageUI;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class InventoryTest extends BaseTest {
 
     @Test
     public void testClickProduct() {
-        ProductDetailPage detailPage = inventoryAction.clickProduct("Sauce Labs Backpack");
+        ProductDetailPageUI detailPage = inventoryAction.clickProduct("Sauce Labs Backpack");
 
         String actualName = detailPage.getProductName();
         Assert.assertEquals(actualName, "Sauce Labs Backpack");
