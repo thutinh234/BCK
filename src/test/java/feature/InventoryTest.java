@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class InventoryTest extends BaseTest {
+public class InventoryTest extends Base {
 
     LoginAction loginAction;
     CartAction cartAction;

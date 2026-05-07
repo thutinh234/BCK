@@ -1,13 +1,12 @@
 package feature;
 
-import action.InventoryAction;
 import action.LoginAction;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ui.LoginPageUI;
 
-public class LoginTest extends BaseTest {
+public class LoginTest extends Base {
 
     LoginAction loginAction;
     LoginPageUI loginPage;

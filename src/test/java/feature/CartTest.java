@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class CartTest extends BaseTest {
+public class CartTest extends Base {
 
     private CartAction cartAction;
     private InventoryAction inventoryAction;

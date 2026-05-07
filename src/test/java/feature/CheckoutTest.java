@@ -1,24 +1,25 @@
 package feature;
 
-import action.CartAction;
-import action.InventoryAction;
-import action.CheckoutAction;
-import action.LoginAction;
+import action.*;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class CheckoutTest extends BaseTest {
+public class CheckoutTest extends Base {
 
     private InventoryAction inventoryAction;
-    private CheckoutAction checkoutAction;
+    private CheckoutPageYourInformationAction checkoutActionYourInformation;
+    private CheckoutPageOverviewAction checkoutActionOverview;
+    private CheckoutPageCompleteAction checkoutActionComplete;
     private CartAction cartAction;
     LoginAction loginAction;
 
     @BeforeMethod
     public void init() {
         inventoryAction = new InventoryAction(driver);
-        checkoutAction = new CheckoutAction(driver);
+        checkoutActionYourInformation = new CheckoutPageYourInformationAction(driver);
+        checkoutActionOverview = new CheckoutPageOverviewAction(driver);
+        checkoutActionComplete = new CheckoutPageCompleteAction(driver);
         cartAction = new CartAction(driver);
         loginAction = new LoginAction(driver);
         loginAction.login("standard_user", "secret_sauce");
@@ -30,8 +31,8 @@ public class CheckoutTest extends BaseTest {
     //  valid info
     @Test
     public void verifyCheckoutSuccess() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
         Assert.assertTrue(driver.getCurrentUrl().contains("checkout-step-two"),
                 "Not navigate to Overview page");
@@ -40,38 +41,38 @@ public class CheckoutTest extends BaseTest {
     // validate empty first name
     @Test
     public void verifyFirstNameRequired() {
-        checkoutAction.fillInformation("", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
-        Assert.assertEquals(checkoutAction.getErrorMessage(),
+        Assert.assertEquals(checkoutActionYourInformation.getErrorMessage(),
                 "Error: First Name is required");
     }
     //verify empty Last name
     @Test
     public void verifyLastNameRequired() {
-        checkoutAction.fillInformation("Tinh", "", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "", "10000");
+        checkoutActionYourInformation.submitInformation();
 
         Assert.assertEquals(
-                checkoutAction.getErrorMessage(),
+                checkoutActionYourInformation.getErrorMessage(),
                 "Error: Last Name is required"
         );
     }
     //verify khi không nhập postal code
     @Test
     public void verifyPostalCodeRequired() {
-        checkoutAction.fillInformation("Tinh", "Tran", "");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "");
+        checkoutActionYourInformation.submitInformation();
 
         Assert.assertEquals(
-                checkoutAction.getErrorMessage(),
+                checkoutActionYourInformation.getErrorMessage(),
                 "Error: Postal Code is required"
         );
     }
     //verìy khi click cancel ở màn checkout
     @Test
     public void verifyCancelCheckout() {
-        checkoutAction.cancelCheckout();
+        checkoutActionYourInformation.cancelCheckout();
 
         Assert.assertTrue(
                 cartAction.isOnCartPage(),
@@ -81,10 +82,10 @@ public class CheckoutTest extends BaseTest {
     //verify khi quay lại từ màn overview
     @Test
     public void verifyBackFromOverview() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
-        checkoutAction.cancelCheckout();
+        checkoutActionYourInformation.cancelCheckout();
         System.out.println(driver.getCurrentUrl());
         Assert.assertTrue(inventoryAction.isOnInventoryPage());
     }
@@ -106,27 +107,27 @@ public class CheckoutTest extends BaseTest {
     //verify item hiển thị ở màn overview
     @Test
     public void verifyItemDisplayedInOverview() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
         Assert.assertTrue(
-                checkoutAction.isProductDisplayed("Sauce Labs Backpack"),
+                checkoutActionYourInformation.isProductDisplayed("Sauce Labs Backpack"),
                 "Product not displayed in overview"
         );
     }
 //verify tổbg tiền ở bước checkout
     @Test public void verifyPriceBreakdown() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
-        double itemTotal = checkoutAction.getItemTotal();
-        double tax = checkoutAction.getTax();
-        double total = checkoutAction.getActualTotal();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
+        double itemTotal = checkoutActionOverview.getItemTotal();
+        double tax = checkoutActionOverview.getTax();
+        double total = checkoutActionOverview.getActualTotal();
         Assert.assertEquals(itemTotal + tax, total, 0.01, "Price breakdown incorrect");
     }
     //verify màn checkout sau khi reload lại trang
     @Test
     public void verifyCheckoutAfterRefresh() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
 
         driver.navigate().refresh();
 
@@ -139,27 +140,30 @@ public class CheckoutTest extends BaseTest {
     // finish order
     @Test
     public void verifyCompleteOrder() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
-        checkoutAction.finishCheckout();
-        System.out.println(checkoutAction.getCompleteMessage());
-        String actual = checkoutAction.getCompleteMessage();
-
+        checkoutActionOverview.finishCheckout();
+       // System.out.println(checkoutActionComplete.getCompleteMessage());
+        String actualMessageComplate = checkoutActionComplete.getCompleteMessage();
+        String actualTitlePage = checkoutActionComplete.getTitlePage();
         Assert.assertTrue(
-                actual.equalsIgnoreCase("THANK YOU FOR YOUR ORDER!"),
-                "Expected 'thank you' but got: " + actual
+                actualMessageComplate.equalsIgnoreCase("THANK YOU FOR YOUR ORDER!"),
+                "Expected 'thank you' but got: " + actualMessageComplate
         );
+        Assert.assertEquals(actualTitlePage,"Checkout: Complete!","Không hiển thị đúng Pagte Title");
+        Assert.assertTrue(checkoutActionComplete.isBackHomeButtonDisplayed());
+        Assert.assertTrue(checkoutActionComplete.isCompleteImageDisplayed());
     }
 
     //  back home
     @Test
     public void verifyBackHome() {
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
-        checkoutAction.finishCheckout();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
+        checkoutActionOverview.finishCheckout();
 
-        checkoutAction.backToHome();
+        checkoutActionOverview.backToHome();
 
         Assert.assertTrue(driver.getCurrentUrl().contains("inventory"),
                 "Not back to inventory");
@@ -168,11 +172,11 @@ public class CheckoutTest extends BaseTest {
     @Test
     public void verifyTotalPriceCalculation() {
 
-        checkoutAction.fillInformation("Tinh", "Tran", "10000");
-        checkoutAction.submitInformation();
+        checkoutActionYourInformation.fillInformation("Tinh", "Tran", "10000");
+        checkoutActionYourInformation.submitInformation();
 
-        double expected = checkoutAction.calculateExpectedTotal();
-        double actual = checkoutAction.getActualTotal();
+        double expected = checkoutActionOverview.calculateExpectedTotal();
+        double actual = checkoutActionOverview.getActualTotal();
 
         System.out.println("Expected: " + expected);
         System.out.println("Actual: " + actual);

@@ -63,10 +63,6 @@ public class InventoryPageUI extends BasePageUI {
         return By.xpath(String.format(BUTTON_BY_PRODUCT, productName, action));
     }
 
-//    public void clickButton(String productName, String action) {
-//        click(getButtonByProduct(productName, action));
-//    }
-
     public void addToCart(String productName) {
         click(getButtonByProduct(productName, "add-to-cart"));
     }
