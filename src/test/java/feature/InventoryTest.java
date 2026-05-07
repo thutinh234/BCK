@@ -59,8 +59,13 @@ public class InventoryTest extends Base {
     @Test
     public void testAddProductToCart() {
         inventoryAction.addProductToCart("Sauce Labs Backpack");
+        inventoryAction.addProductToCart("Sauce Labs Fleece Jacket");
         boolean isRemoveDisplayed = inventoryAction.isRemoveButtonDisplayed("Sauce Labs Backpack");
-        Assert.assertTrue(isRemoveDisplayed,"Sản phẩm chưa được thêm vào giỏ hàng");
+        boolean isRemoveDisplayed1 = inventoryAction.isRemoveButtonDisplayed("Sauce Labs Fleece Jacket");
+        Assert.assertTrue(isRemoveDisplayed,"Product was not added to cart");
+        Assert.assertTrue(isRemoveDisplayed1,"Product was not added to cart");
+        Assert.assertEquals(inventoryAction.getCartBadgeCount(), "2", "Cart badge count is incorrect"
+        );
     }
     //verify đếm số lượng hiển thị khi thêm sản phẩm vào giỏ hàng
     @Test

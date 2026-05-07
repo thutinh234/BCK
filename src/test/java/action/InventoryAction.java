@@ -58,7 +58,9 @@ public class InventoryAction {
     public int getCartCount() {
         return inventoryPage.getCartBadgeCount();
     }
-
+    public String getCartBadgeCount() {
+        return driver.findElement(InventoryPageUI.CART_BADGE).getText();
+    }
     public int getInventoryItemCount() {
         return inventoryPage.getInventoryItemCount();
     }
