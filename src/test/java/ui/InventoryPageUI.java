@@ -25,7 +25,8 @@ public class InventoryPageUI extends BasePageUI {
     public static final By  cartTitle = By.xpath("//span[@class='title']");
     public static final By MENU_BUTTON = By.id("react-burger-menu-btn");
     public static final By LOGOUT_LINK = By.id("logout_sidebar_link");
-
+    public static final By PRODUCT_LIST =
+            By.className("inventory_item");
     public void clickLogout() {
         openSidebar();
         driver.findElement(LOGOUT_LINK).click();

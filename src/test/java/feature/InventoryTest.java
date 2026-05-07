@@ -3,9 +3,12 @@ package feature;
 import action.CartAction;
 import action.InventoryAction;
 import action.LoginAction;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ui.InventoryPageUI;
+import ui.LoginPageUI;
 import ui.ProductDetailPageUI;
 
 import java.util.ArrayList;
@@ -24,6 +27,14 @@ public class InventoryTest extends Base {
         loginAction.login("standard_user", "secret_sauce");
         inventoryAction = new InventoryAction(driver);
         cartAction = new CartAction(driver);
+    }
+    @Test
+    public void verifyInventoryPage(){
+        int actualProducts = inventoryAction.getTotalProducts();
+        WebElement actualTitle = driver.findElement(InventoryPageUI.cartTitle);
+        Assert.assertEquals(driver.getCurrentUrl(), "https://www.saucedemo.com/inventory.html", "Not in Inventory page");
+        Assert.assertEquals(actualTitle.getText(), "Products","Not in Inventory page");
+        Assert.assertEquals(actualProducts, 6, "Product total is incorrect");
     }
     //verify hiển thị thông tin sản phẩm
     @Test
@@ -56,7 +67,6 @@ public class InventoryTest extends Base {
     public void verifyCartBadgeCount() {
         inventoryAction.addProductToCart("Sauce Labs Backpack");
         inventoryAction.addProductToCart("Sauce Labs Bike Light");
-
         int badge = inventoryAction.getCartCount();
         Assert.assertEquals(badge, 2, "Cart badge count incorrect");
     }
@@ -75,15 +85,15 @@ public class InventoryTest extends Base {
         ProductDetailPageUI detailPage = inventoryAction.clickProduct("Sauce Labs Backpack");
 
         String actualName = detailPage.getProductName();
+        WebElement buttonDisplay = driver.findElement(ProductDetailPageUI.BACK_BUTTON);
         Assert.assertEquals(actualName, "Sauce Labs Backpack");
+        Assert.assertTrue(buttonDisplay.isDisplayed()," Button Back to products not displayed");
     }
     //verify khi back về từ màn chi tiết sản phẩm
     @Test
     public void verifyBackFromProductDetail() {
         inventoryAction.clickProduct("Sauce Labs Backpack");
-
         driver.navigate().back();
-
         Assert.assertTrue(inventoryAction.isOnInventoryPage(),
                 "Not returned to inventory page");
     }

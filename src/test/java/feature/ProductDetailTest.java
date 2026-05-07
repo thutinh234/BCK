@@ -32,8 +32,7 @@ public class ProductDetailTest extends Base {
     public void verifyAddToCartButtonDisplayed(){
 
         Assert.assertTrue(
-                productDetailAction.isAddToCartButtonDisplayed("Sauce Labs Backpack")
-        );
+                productDetailAction.isAddToCartButtonDisplayed("Sauce Labs Backpack"),"Button Add to Cart not displayed");
     }
     @Test
     public void verifyBackToInventory(){
@@ -45,7 +44,7 @@ public class ProductDetailTest extends Base {
 
         String actualName = productDetailPage.getProductName();
         String actualPrice = productDetailPage.getProductPrice();
-        Assert.assertEquals(actualName, "Sauce Labs Backpack");
-        Assert.assertEquals(actualPrice, "$29.99");
+        Assert.assertEquals(actualName, "Sauce Labs Backpack","Display correct product name");
+        Assert.assertEquals(actualPrice, "$29.99"," Display correct product price");
     }
 }

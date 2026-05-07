@@ -1,6 +1,7 @@
 package action;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import ui.CartPageUI;
 import ui.InventoryPageUI;
 import ui.ProductDetailPageUI;
@@ -65,7 +66,13 @@ public class InventoryAction {
         inventoryPage.clickCartIcon();
 
     }
+    public int getTotalProducts() {
 
+        List<WebElement> products =
+                driver.findElements(InventoryPageUI.PRODUCT_LIST);
+
+        return products.size();
+    }
     public void sortBy(String option) {
         inventoryPage.selectSort(option);
     }
