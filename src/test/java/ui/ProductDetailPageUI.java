@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 public class ProductDetailPageUI extends BasePageUI {
 
-    public static final By PRODUCT_NAME = By.xpath("inventory_details_name large_size");
+    public static final By PRODUCT_NAME = By.xpath("//div[@class='inventory_details_name large_size']");
     public static final By PRODUCT_PRICE = By.xpath("//div[@class='inventory_details_price']");
     public static final By BACK_BUTTON = By.xpath("//button[@id='back-to-products']");
     public static final By ADD_TO_CART_BUTTON = By.xpath("//button[text()='Add to cart']");
