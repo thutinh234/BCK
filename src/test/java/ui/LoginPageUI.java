@@ -20,14 +20,11 @@ public class LoginPageUI extends BasePageUI {
         sendKeys(PASSWORD, pass);
         click(LOGIN_BUTTON);
     }
+
     public String getErrorMessage() {
         return wait.until(
                 ExpectedConditions.visibilityOfElementLocated(ERROR_MESSAGE)
         ).getText();
     }
-    //public void clickSubmit() {
-      //  driver.findElement(btnLogin).click();
-   //}
-
 
 }

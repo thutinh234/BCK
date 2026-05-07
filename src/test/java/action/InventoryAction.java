@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import ui.CartPageUI;
 import ui.InventoryPageUI;
 import ui.ProductDetailPageUI;
-
 import java.util.List;
 
 public class InventoryAction {
@@ -18,6 +17,20 @@ public class InventoryAction {
         cartPage = new CartPageUI(driver);
     }
 
+    public void logout() {
+        inventoryPage.clickLogout();
+    }
+    public int getImageCount() {
+        return inventoryPage.getImageCount();
+    }
+
+    public int getDescriptionCount() {
+        return inventoryPage.getDescriptionCount();
+    }
+
+    public List<String> getAllPrices() {
+        return inventoryPage.getAllPrices();
+    }
     public void addProductToCart(String productName) {
         inventoryPage.addToCart(productName);
     }
@@ -37,12 +50,17 @@ public class InventoryAction {
         inventoryPage.openProductDetail(productName);
         return new ProductDetailPageUI(driver);
     }
-
+    public String getCartTitle() {
+        return inventoryPage.getCartTitle();
+    }
 
     public int getCartCount() {
         return inventoryPage.getCartBadgeCount();
     }
 
+    public int getInventoryItemCount() {
+        return inventoryPage.getInventoryItemCount();
+    }
     public void goToCart() {
         inventoryPage.clickCartIcon();
 
@@ -59,44 +77,10 @@ public class InventoryAction {
     public List<Double> getPrices() {
         return inventoryPage.getProductPrices();
     }
-    public List<String> getAllQuantities() {
-        return cartPage.getAllQuantities();
-    }
+
 
     public String getProductPrice(String name) {
         return inventoryPage.getPriceByProductName(name);
-    }
-
-    public String getCartProductPrice(String name) {
-        return cartPage.getPriceByProductName(name);
-    }
-
-    public int getCartItemCount() {
-        return cartPage.getItemCount();
-    }
-
-    // ===== ACTION =====
-
-    public void removeProductInCart(String name) {
-        cartPage.clickRemove(name);
-    }
-
-    public void clickContinueShopping() {
-        cartPage.clickContinueShopping();
-    }
-
-    public void clickCheckout() {
-        cartPage.clickCheckout();
-    }
-
-    // ===== VERIFY =====
-
-    public boolean isCheckoutButtonDisplayed() {
-        return cartPage.isCheckoutDisplayed();
-    }
-
-    public boolean isContinueShoppingDisplayed() {
-        return cartPage.isContinueShoppingDisplayed();
     }
 
     public boolean isOnInventoryPage() {

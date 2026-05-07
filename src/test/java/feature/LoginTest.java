@@ -5,14 +5,17 @@ import action.LoginAction;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ui.LoginPageUI;
 
 public class LoginTest extends BaseTest {
 
     LoginAction loginAction;
+    LoginPageUI loginPage;
 
     @BeforeMethod
     public void init() {
         loginAction = new LoginAction(driver);
+        loginPage = new LoginPageUI(driver);
     }
 
     @Test
@@ -26,10 +29,11 @@ public class LoginTest extends BaseTest {
     @Test
     public void testLoginWithInvalidUsername() {
         loginAction.login("standard1", "secret_sauce");
-
         String error = loginAction.getErrorMessage();
-
-        Assert.assertTrue(error.contains("Username and password do not match"));
+        Assert.assertTrue(
+                error.contains("Username and password do not match"),
+                "Expected error not found. Actual: " + error
+        );
     }
 
     @Test
@@ -38,7 +42,21 @@ public class LoginTest extends BaseTest {
 
         String error = loginAction.getErrorMessage();
 
-        Assert.assertTrue(error.contains("Username and password do not match"));
+        Assert.assertTrue(
+                error.contains("Username and password do not match"),
+                "Expected error not found. Actual: " + error
+        );
+    }
+    @Test
+    public void testLoginWithInvalidUsernameAndPassword() {
+        loginAction.login("standard_user1", "secret_sauce1");
+
+        String error = loginAction.getErrorMessage();
+
+        Assert.assertTrue(
+                error.contains("Username and password do not match"),
+                "Expected error not found. Actual: " + error
+        );
     }
 
     @Test
@@ -47,7 +65,10 @@ public class LoginTest extends BaseTest {
 
         String error = loginAction.getErrorMessage();
 
-        Assert.assertTrue(error.contains("Username is required"));
+        Assert.assertTrue(
+                error.contains("Username is required"),
+                "Expected error not found. Actual: " + error
+        );
     }
 
     @Test
@@ -56,7 +77,21 @@ public class LoginTest extends BaseTest {
 
         String error = loginAction.getErrorMessage();
 
-        Assert.assertTrue(error.contains("Password is required"));
+        Assert.assertTrue(
+                error.contains("Password is required"),
+                "Expected error not found. Actual: " + error
+        );
+    }
+    @Test
+    public void testLoginWithEmptyUsernameAndPassword() {
+        loginAction.login("", "");
+
+        String error = loginAction.getErrorMessage();
+
+        Assert.assertTrue(
+                error.contains("Username is required"),
+                "Expected error not found. Actual: " + error
+        );
     }
     @Test
     public void testLockedUser() {
@@ -84,6 +119,28 @@ public class LoginTest extends BaseTest {
         Assert.assertFalse(
                 driver.getCurrentUrl().contains("inventory"),
                 "SQL Injection bypassed login!"
+        );
+    }
+    @Test
+    public void testLoginWithTrimmedInput() {
+        loginAction.login(" standard_user ", " secret_sauce ");
+
+        String error = loginAction.getErrorMessage();
+
+        Assert.assertTrue(
+                error.contains("Username and password do not match any user in this service"),
+                "Expected login to fail due to case sensitivity. Actual: " + error
+        );
+    }
+    @Test
+    public void testLoginWithCaseSensitivity() {
+        loginAction.login("STANDARD_USER", "secret_sauce");
+
+        String error = loginAction.getErrorMessage();
+
+        Assert.assertTrue(
+                error.contains("Username and password do not match"),
+                "Expected login to fail due to case sensitivity. Actual: " + error
         );
     }
 

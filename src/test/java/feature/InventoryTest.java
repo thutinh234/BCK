@@ -1,8 +1,8 @@
 package feature;
 
+import action.CartAction;
 import action.InventoryAction;
 import action.LoginAction;
-import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,6 +15,7 @@ import java.util.List;
 public class InventoryTest extends BaseTest {
 
     LoginAction loginAction;
+    CartAction cartAction;
     InventoryAction inventoryAction;
 
     @BeforeMethod
@@ -22,14 +23,44 @@ public class InventoryTest extends BaseTest {
         loginAction = new LoginAction(driver);
         loginAction.login("standard_user", "secret_sauce");
         inventoryAction = new InventoryAction(driver);
+        cartAction = new CartAction(driver);
     }
+    //verify hiển thị thông tin sản phẩm
+    @Test
+    public void verifyProductInfoDisplayed() {
+
+        int itemCount = inventoryAction.getInventoryItemCount();
+
+        Assert.assertEquals(inventoryAction.getImageCount(), itemCount,
+                "Some products missing image");
+
+        Assert.assertEquals(inventoryAction.getDescriptionCount(), itemCount,
+                "Some products missing description");
+
+        List<String> prices = inventoryAction.getAllPrices();
+
+        for (String price : prices) {
+            Assert.assertTrue(price.matches("\\$\\d+\\.\\d{2}"),
+                    "Invalid price format: " + price);
+        }
+    }
+    //verify thêm sản phẩm vào giỏ hàng
     @Test
     public void testAddProductToCart() {
         inventoryAction.addProductToCart("Sauce Labs Backpack");
         boolean isRemoveDisplayed = inventoryAction.isRemoveButtonDisplayed("Sauce Labs Backpack");
         Assert.assertTrue(isRemoveDisplayed,"Sản phẩm chưa được thêm vào giỏ hàng");
     }
+    //verify đếm số lượng hiển thị khi thêm sản phẩm vào giỏ hàng
+    @Test
+    public void verifyCartBadgeCount() {
+        inventoryAction.addProductToCart("Sauce Labs Backpack");
+        inventoryAction.addProductToCart("Sauce Labs Bike Light");
 
+        int badge = inventoryAction.getCartCount();
+        Assert.assertEquals(badge, 2, "Cart badge count incorrect");
+    }
+//verify xoá sản phẩm khỏi giỏ hàng
     @Test
     public void testRemoveProduct() {
         inventoryAction.addProductToCart("Sauce Labs Bolt T-Shirt");
@@ -38,7 +69,7 @@ public class InventoryTest extends BaseTest {
         Assert.assertTrue(isAddBtnDisplayed, "Sản phẩm chưa được remove khỏi giỏ hàng");
 
     }
-
+// verofy màn chi tiết sản phẩm khi click vào sản phẩm
     @Test
     public void testClickProduct() {
         ProductDetailPageUI detailPage = inventoryAction.clickProduct("Sauce Labs Backpack");
@@ -46,35 +77,80 @@ public class InventoryTest extends BaseTest {
         String actualName = detailPage.getProductName();
         Assert.assertEquals(actualName, "Sauce Labs Backpack");
     }
+    //verify khi back về từ màn chi tiết sản phẩm
+    @Test
+    public void verifyBackFromProductDetail() {
+        inventoryAction.clickProduct("Sauce Labs Backpack");
+
+        driver.navigate().back();
+
+        Assert.assertTrue(inventoryAction.isOnInventoryPage(),
+                "Not returned to inventory page");
+    }
+    // verify chức năng đi đến giỏ hàng
     @Test
     public void goToCart(){
         inventoryAction.goToCart();
-        String expectedTitle="Your Cart";
-        String actualTitle=driver.findElement(By.xpath("//span[@class='title']")).getText();
-        Assert.assertEquals(actualTitle,expectedTitle," Page is not your cart");
+        Assert.assertEquals(inventoryAction.getCartTitle(), "Your Cart");
     }
+    // verify cart rỗng khi mới vào gian hàng
     @Test
-    public void verifyAddAndRemoveCartFlow() {
+    public void verifyInitialCartEmpty() {
+        Assert.assertEquals(inventoryAction.getCartCount(), 0,
+                "Cart should be empty at start");
+    }
+    //verify thông tin giỏ hàng sau khi refresh
+    @Test
+    public void verifyCartAfterRefresh() {
+        inventoryAction.addProductToCart("Sauce Labs Backpack");
 
-        // add 2 item
+        driver.navigate().refresh();
+
+        Assert.assertEquals(inventoryAction.getCartCount(), 1,
+                "Cart lost after refresh");
+    }
+    // verify thông tin giỏ hàng sau khi login lại
+    @Test
+    public void verifyCartAfterRelogin() {
+        inventoryAction.addProductToCart("Sauce Labs Backpack");
+
+        inventoryAction.logout();
+        loginAction.login("standard_user", "secret_sauce");
+
+        Assert.assertEquals(inventoryAction.getCartCount(), 1,
+                "Cart not persisted after relogin");
+    }
+//verify số lượng hiển thị item của giỏ hàng ở màn inventory và màn your cart
+    @Test
+    public void verifyCartBadgeMatchesItemCount() {
         inventoryAction.addProductToCart("Sauce Labs Backpack");
         inventoryAction.addProductToCart("Sauce Labs Bike Light");
 
-        // verify = 2
+        int badge = inventoryAction.getCartCount();
+        inventoryAction.goToCart();
+
+        int actual = cartAction.getCartItemCount();
+
+        Assert.assertEquals(badge, actual, "Badge and cart mismatch");
+    }
+    //verify remove item và check số lượng
+    @Test
+    public void verifyAddAndRemoveCartFlow() {
+
+        inventoryAction.addProductToCart("Sauce Labs Backpack");
+        inventoryAction.addProductToCart("Sauce Labs Bike Light");
+
         Assert.assertEquals(inventoryAction.getCartCount(), 2, "Cart count after add is wrong");
 
-        // remove 1 item
         inventoryAction.removeProduct("Sauce Labs Backpack");
 
-        // verify = 1
         Assert.assertEquals(inventoryAction.getCartCount(), 1, "Cart count after remove is wrong");
 
-        // remove hết
         inventoryAction.removeProduct("Sauce Labs Bike Light");
 
-        // verify = 0
         Assert.assertEquals(inventoryAction.getCartCount(), 0, "Cart should be empty");
     }
+   // verify chức năng sort
     @Test
     public void verifySortNameAZ() {
         InventoryAction action = new InventoryAction(driver);

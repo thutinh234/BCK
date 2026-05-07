@@ -20,6 +20,7 @@ public class BasePageUI {
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
+
     public void sendKeys(By locator, String text) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).clear();
         driver.findElement(locator).sendKeys(text);

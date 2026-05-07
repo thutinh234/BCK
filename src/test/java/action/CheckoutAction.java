@@ -30,7 +30,9 @@ public class CheckoutAction {
     public void finishCheckout() {
         checkoutPage.clickFinish();
     }
-
+    public boolean isProductDisplayed(String productName) {
+        return checkoutPage.isProductDisplayed(productName);
+    }
     public void cancelCheckout() {
         checkoutPage.clickCancel();
     }
@@ -54,5 +56,12 @@ public class CheckoutAction {
 
     public double getActualTotal() {
         return checkoutPage.getTotal();
+    }
+    public double getItemTotal() {
+        return checkoutPage.getItemTotal();
+    }
+
+    public double getTax() {
+        return checkoutPage.getTax();
     }
 }

@@ -16,12 +16,14 @@ public class CartPageUI extends BasePageUI {
     public static final By QUANTITIES = By.className("cart_quantity");
     public static final By PRODUCT_NAMES = By.className("inventory_item_name");
     public static final By PRODUCT_PRICES = By.className("inventory_item_price");
-
+    public static final By pageTitle = By.xpath("//span[@class='title']");
     public static final By CHECKOUT_BUTTON = By.id("checkout");
     public static final By CONTINUE_SHOPPING_BUTTON = By.id("continue-shopping");
+    public static final By REMOVE_BUTTON=By.xpath(".//button[contains(@id,'remove')]");
 
-    // ===== DATA =====
-
+    public String getPageTitle() {
+        return driver.findElement(pageTitle).getText();
+    }
     public int getItemCount() {
         return driver.findElements(CARTITEMS).size();
     }
@@ -38,14 +40,14 @@ public class CartPageUI extends BasePageUI {
 
         for (WebElement item : items) {
             String name = item.findElement(PRODUCT_NAMES).getText();
+
             if (name.equals(productName)) {
-                return item.findElement(PRODUCT_NAMES).getText();
+                return item.findElement(PRODUCT_PRICES).getText();
             }
         }
-        return null;
-    }
 
-    // ===== ACTION =====
+        throw new RuntimeException("Product not found in cart: " + productName);
+    }
 
     public void clickRemove(String productName) {
         List<WebElement> items = driver.findElements(CARTITEMS);
@@ -53,7 +55,7 @@ public class CartPageUI extends BasePageUI {
         for (WebElement item : items) {
             String name = item.findElement(PRODUCT_NAMES).getText();
             if (name.equals(productName)) {
-                item.findElement(By.tagName("button")).click();
+                item.findElement(REMOVE_BUTTON).click();
                 break;
             }
         }
@@ -66,8 +68,6 @@ public class CartPageUI extends BasePageUI {
     public void clickContinueShopping() {
         click(CONTINUE_SHOPPING_BUTTON);
     }
-
-    // ===== VERIFY =====
 
     public boolean isCheckoutDisplayed() {
         return driver.findElement(CHECKOUT_BUTTON).isDisplayed();

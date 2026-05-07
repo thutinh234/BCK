@@ -2,16 +2,12 @@ package ui;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
 public class CheckoutPageUI extends BasePageUI {
 
-    public CheckoutPageUI(WebDriver driver) {
-        super(driver);
-    }
-
-    // ===== Your Info =====
     public static final By FIRSTNAME = By.id("first-name");
     public static final By LASTNAME = By.id("last-name");
     public static final By ZIPCODE = By.id("postal-code");
@@ -21,15 +17,21 @@ public class CheckoutPageUI extends BasePageUI {
     public static final By ITEM_TOTAL = By.className("summary_subtotal_label");
     public static final By TAX = By.className("summary_tax_label");
     public static final By TOTAL = By.className("summary_total_label");
-    // ===== Overview =====
     public static final By FINISH_BUTTON = By.id("finish");
     public static final By CANCEL_BUTTON = By.id("cancel");
-
-    // ===== Complete =====
     public static final By COMPLETE_HEADER = By.className("complete-header");
     public static final By BACK_HOME_BUTTON = By.id("back-to-products");
 
-    // ===== ACTION =====
+    public CheckoutPageUI(WebDriver driver) {
+        super(driver);
+    }
+    private By getProductLocator(String name) {
+        return By.xpath("//div[@class='inventory_item_name' and text()='" + name + "']");
+    }
+    public boolean isProductDisplayed(String productName) {
+        List<WebElement> elements = driver.findElements(getProductLocator(productName));
+        return !elements.isEmpty() && elements.get(0).isDisplayed();
+    }
     public void inputFirstName(String value) {
         sendKeys(FIRSTNAME, value);
     }
@@ -58,7 +60,6 @@ public class CheckoutPageUI extends BasePageUI {
         click(BACK_HOME_BUTTON);
     }
 
-    // ===== VERIFY =====
     public String getErrorMessage() {
         return getText(ERROR_MESSAGE);
     }
@@ -73,15 +74,20 @@ public class CheckoutPageUI extends BasePageUI {
                 .map(e -> Double.parseDouble(e.getText().replace("$", "")))
                 .toList();
     }
+    private double extractPrice(String text) {
+        return Double.parseDouble(
+                text.replaceAll("[^0-9.]", "")
+        );
+    }
 
     public double getItemTotal() {
-        String text = getText(ITEM_TOTAL); // "Item total: $29.99"
-        return Double.parseDouble(text.replaceAll("[^0-9.]", ""));
+        String text = driver.findElement(ITEM_TOTAL).getText();
+        return extractPrice(text);
     }
 
     public double getTax() {
-        String text = getText(TAX);
-        return Double.parseDouble(text.replaceAll("[^0-9.]", ""));
+        String text = driver.findElement(TAX).getText();
+        return extractPrice(text);
     }
 
     public double getTotal() {

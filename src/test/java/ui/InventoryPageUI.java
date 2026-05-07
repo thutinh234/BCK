@@ -3,19 +3,13 @@ package ui;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
 public class InventoryPageUI extends BasePageUI {
-    public static final By ADD_TO_CART_ITEM1 = By.xpath("//div[text()='Sauce Labs Backpack']/ancestor::div[@class='inventory_item_description']//button");
-    public static final By PRODUCT_NAME1 = By.xpath("//div[text()='Sauce Labs Backpack']");
 
-    public static final By ADD_TO_CART_ITEM2= By.xpath("//div[text()='Sauce Labs Fleece Jacket']/ancestor::div[@class='inventory_item_description']//button");
-    public static final By SORT_BY_NAME_AZ=By.xpath("//option[@value='az']");
-    public static final By SORT_BY_NAME_ZA=By.xpath("//option[@value='za']");
-    public static final By SORT_BY_PRICE_LOW_TO_HIGH=By.xpath("//option[@value='lohi']");
-    public static final By SORT_BY_PRICE_HIGH_TO_LOW=By.xpath("//option[@value='hilo']");
     public static final By SORT_DROPDOWN = By.className("product_sort_container");
     public static final By PRODUCT_NAMES = By.className("inventory_item_name");
     public static final By PRODUCT_PRICES = By.className("inventory_item_price");
@@ -24,7 +18,43 @@ public class InventoryPageUI extends BasePageUI {
     public static final String BUTTON_BY_PRODUCT =
             "//div[text()='%s']/ancestor::div[@class='inventory_item']//button[contains(@id,'%s')]";
     public static final String PRODUCT_NAME_XPATH =
-            "//div[@class='inventory_item_name' and text()='%s']";
+            "//div[contains(@class,'inventory_item')]//div[contains(text(),'%s')]";
+    public static final By productImages = By.cssSelector(".inventory_item_img img");
+    public static final By productDescriptions = By.className("inventory_item_desc");
+    public static final By productPrices = By.className("inventory_item_price");
+    public static final By  cartTitle = By.xpath("//span[@class='title']");
+    public static final By MENU_BUTTON = By.id("react-burger-menu-btn");
+    public static final By LOGOUT_LINK = By.id("logout_sidebar_link");
+
+    public void clickLogout() {
+        openSidebar();
+        driver.findElement(LOGOUT_LINK).click();
+    }
+    public void openSidebar() {
+        click(MENU_BUTTON);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(LOGOUT_LINK));
+    }
+
+    public String getCartTitle() {
+        return driver.findElement(cartTitle).getText();
+    }
+    public int getInventoryItemCount() {
+        return driver.findElements(ITEMS).size();
+    }
+    public int getImageCount() {
+        return driver.findElements(productImages).size();
+    }
+
+    public int getDescriptionCount() {
+        return driver.findElements(productDescriptions).size();
+    }
+
+    public List<String> getAllPrices() {
+        return driver.findElements(productPrices)
+                .stream()
+                .map(e -> e.getText())
+                .toList();
+    }
     public InventoryPageUI(WebDriver driver) {
         super(driver);
     }
@@ -32,16 +62,15 @@ public class InventoryPageUI extends BasePageUI {
     private By getButtonByProduct(String productName, String action) {
         return By.xpath(String.format(BUTTON_BY_PRODUCT, productName, action));
     }
-    //  Click button
-    public void clickButton(String productName, String action) {
-        click(getButtonByProduct(productName, action));
-    }
 
-    // Add to cart
+//    public void clickButton(String productName, String action) {
+//        click(getButtonByProduct(productName, action));
+//    }
+
     public void addToCart(String productName) {
         click(getButtonByProduct(productName, "add-to-cart"));
     }
-    //  Remove
+
     public void clickRemove(String productName) {
         click(getButtonByProduct(productName, "remove"));
     }
@@ -49,7 +78,6 @@ public class InventoryPageUI extends BasePageUI {
         return By.xpath(String.format(PRODUCT_NAME_XPATH, productName));
     }
 
-    //  Click product
     public void openProductDetail(String productName) {
         click(getProductNameLocator(productName));
     }
@@ -61,12 +89,10 @@ public class InventoryPageUI extends BasePageUI {
         return driver.findElements(getButtonByProduct(productName, "add-to-cart")).size() > 0;
     }
 
-    //  Cart icon
     public void clickCartIcon() {
         click(By.className("shopping_cart_link"));
     }
 
-    //  Cart badge
     public int getCartBadgeCount() {
         List<WebElement> badges = driver.findElements(CART_BADGE);
 

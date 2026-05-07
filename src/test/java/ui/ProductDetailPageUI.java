@@ -6,8 +6,9 @@ import org.openqa.selenium.WebDriver;
 public class ProductDetailPageUI extends BasePageUI {
 
     public static final By PRODUCT_NAME=By.className("inventory_details_name");
+
     public ProductDetailPageUI(WebDriver driver) {
-        super(driver); // ✅ truyền driver lên BasePage
+        super(driver);
     }
 
     public String getProductName() {
