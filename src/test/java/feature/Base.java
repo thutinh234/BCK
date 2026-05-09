@@ -15,6 +15,9 @@ public class Base {
     public void setup() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
+        options.addArguments("--headless=new");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();

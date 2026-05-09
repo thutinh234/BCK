@@ -143,4 +143,18 @@ public class LoginTest extends Base {
         );
     }
 
+    @Test
+    public void testLogout() {
+        loginAction.login("standard_user", "secret_sauce");
+        action.InventoryAction inventoryAction = new action.InventoryAction(driver);
+        inventoryAction.logout();
+        Assert.assertTrue(driver.getCurrentUrl().contains("saucedemo.com/"), "Logout failed");
+    }
+
+    @Test
+    public void testLoginWithProblemUser() {
+        loginAction.login("problem_user", "secret_sauce");
+        Assert.assertTrue(driver.getCurrentUrl().contains("inventory"), "Problem user login failed");
+    }
+
 }

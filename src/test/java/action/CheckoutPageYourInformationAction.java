@@ -1,41 +1,39 @@
 package action;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import ui.CheckoutPageCompleteUI;
-import ui.CheckoutPageOverviewUI;
 import ui.CheckoutPageYourInformationUI;
-
-import java.util.List;
 
 public class CheckoutPageYourInformationAction {
 
-    private CheckoutPageYourInformationUI checkoutPageYourInformation;
-
+    private WebDriver driver;
+    private CheckoutPageYourInformationUI checkoutPage;
 
     public CheckoutPageYourInformationAction(WebDriver driver) {
-        checkoutPageYourInformation = new CheckoutPageYourInformationUI(driver);
+        this.driver = driver;
+        checkoutPage = new CheckoutPageYourInformationUI(driver);
     }
 
     public void fillInformation(String first, String last, String zip) {
-        checkoutPageYourInformation.inputFirstName(first);
-        checkoutPageYourInformation.inputLastName(last);
-        checkoutPageYourInformation.inputZip(zip);
+        checkoutPage.sendKeys(CheckoutPageYourInformationUI.FIRSTNAME, first);
+        checkoutPage.sendKeys(CheckoutPageYourInformationUI.LASTNAME, last);
+        checkoutPage.sendKeys(CheckoutPageYourInformationUI.ZIPCODE, zip);
     }
 
     public void submitInformation() {
-        checkoutPageYourInformation.clickContinue();
+        checkoutPage.click(CheckoutPageYourInformationUI.CONTINUE_BUTTON);
     }
 
     public String getErrorMessage() {
-        return checkoutPageYourInformation.getErrorMessage();
+        return checkoutPage.getText(CheckoutPageYourInformationUI.ERROR_MESSAGE);
     }
-
 
     public boolean isProductDisplayed(String productName) {
-        return checkoutPageYourInformation.isProductDisplayed(productName);
-    }
-    public void cancelCheckout() {
-        checkoutPageYourInformation.clickCancel();
+        By locator = By.xpath(String.format(CheckoutPageYourInformationUI.PRODUCT_NAME_XPATH, productName));
+        return !driver.findElements(locator).isEmpty() && driver.findElement(locator).isDisplayed();
     }
 
+    public void cancelCheckout() {
+        checkoutPage.click(CheckoutPageYourInformationUI.CANCEL_BUTTON);
+    }
 }

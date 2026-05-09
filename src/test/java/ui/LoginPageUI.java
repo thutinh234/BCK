@@ -15,16 +15,4 @@ public class LoginPageUI extends BasePageUI {
         super(driver);
     }
 
-    public void login(String user, String pass) {
-        sendKeys(USERNAME, user);
-        sendKeys(PASSWORD, pass);
-        click(LOGIN_BUTTON);
-    }
-
-    public String getErrorMessage() {
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(ERROR_MESSAGE)
-        ).getText();
-    }
-
 }

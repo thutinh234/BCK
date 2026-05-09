@@ -27,104 +27,12 @@ public class InventoryPageUI extends BasePageUI {
     public static final By LOGOUT_LINK = By.id("logout_sidebar_link");
     public static final By PRODUCT_LIST =
             By.className("inventory_item");
-    public void clickLogout() {
-        openSidebar();
-        driver.findElement(LOGOUT_LINK).click();
-    }
-    public void openSidebar() {
-        click(MENU_BUTTON);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(LOGOUT_LINK));
-    }
+    public static final By SHOPPING_CART_LINK = By.className("shopping_cart_link");
 
-    public String getCartTitle() {
-        return driver.findElement(cartTitle).getText();
-    }
-    public int getInventoryItemCount() {
-        return driver.findElements(ITEMS).size();
-    }
-    public int getImageCount() {
-        return driver.findElements(productImages).size();
-    }
-
-    public int getDescriptionCount() {
-        return driver.findElements(productDescriptions).size();
-    }
-
-    public List<String> getAllPrices() {
-        return driver.findElements(productPrices)
-                .stream()
-                .map(e -> e.getText())
-                .toList();
-    }
     public InventoryPageUI(WebDriver driver) {
         super(driver);
     }
 
-    private By getButtonByProduct(String productName, String action) {
-        return By.xpath(String.format(BUTTON_BY_PRODUCT, productName, action));
-    }
-
-    public void addToCart(String productName) {
-        click(getButtonByProduct(productName, "add-to-cart"));
-    }
-
-    public void clickRemove(String productName) {
-        click(getButtonByProduct(productName, "remove"));
-    }
-    private By getProductNameLocator(String productName) {
-        return By.xpath(String.format(PRODUCT_NAME_XPATH, productName));
-    }
-
-    public void openProductDetail(String productName) {
-        click(getProductNameLocator(productName));
-    }
-    public boolean isRemoveButtonDisplayed(String productName) {
-        return driver.findElements(getButtonByProduct(productName, "remove")).size() > 0;
-    }
-
-    public boolean isAddToCartButtonDisplayed(String productName) {
-        return driver.findElements(getButtonByProduct(productName, "add-to-cart")).size() > 0;
-    }
-
-    public void clickCartIcon() {
-        click(By.className("shopping_cart_link"));
-    }
-
-    public int getCartBadgeCount() {
-        List<WebElement> badges = driver.findElements(CART_BADGE);
-
-        if (badges.isEmpty()) {
-            return 0;
-        }
-        return Integer.parseInt(badges.get(0).getText());
-    }
-    public List<String> getProductNames() {
-        return driver.findElements(PRODUCT_NAMES)
-                .stream()
-                .map(e -> e.getText())
-                .toList();
-    }
-    public List<Double> getProductPrices() {
-        return driver.findElements(PRODUCT_PRICES)
-                .stream()
-                .map(e -> Double.parseDouble(e.getText().replace("$", "")))
-                .toList();
-    }
-    public void selectSort(String option) {
-        Select select = new Select(driver.findElement(SORT_DROPDOWN));
-        select.selectByVisibleText(option);
-    }
-    public String getPriceByProductName(String productName) {
-        List<WebElement> items = driver.findElements(ITEMS);
-
-        for (WebElement item : items) {
-            String name = item.findElement(PRODUCT_NAMES).getText();
-            if (name.equals(productName)) {
-                return item.findElement(PRODUCT_PRICES).getText();
-            }
-        }
-        return null;
-    }
 }
 
 

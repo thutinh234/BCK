@@ -14,31 +14,4 @@ public class ProductDetailPageUI extends BasePageUI {
     public ProductDetailPageUI(WebDriver driver) {
         super(driver);
     }
-
-    public String getProductName() {
-
-        return driver.findElement(PRODUCT_NAME).getText();
-    }
-
-    public String getProductPrice() {
-
-        return driver.findElement(PRODUCT_PRICE).getText();
-    }
-
-    public void clickBackButton() {
-        click(BACK_BUTTON);
-    }
-
-    public boolean isAddToCartButtonDisplayed() {
-
-        return driver.findElement(ADD_TO_CART_BUTTON)
-                .isDisplayed();
-    }
-
-    public boolean isRemoveButtonDisplayed() {
-
-        return driver.findElement(REMOVE_BUTTON)
-                .isDisplayed();
-    }
-
 }

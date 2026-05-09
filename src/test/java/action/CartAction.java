@@ -1,45 +1,69 @@
 package action;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import ui.CartPageUI;
 import java.util.List;
 
 public class CartAction {
     private WebDriver driver;
     private CartPageUI cartPage;
+
     public CartAction(WebDriver driver) {
         this.driver = driver;
         cartPage = new CartPageUI(driver);
     }
+
     public List<String> getAllQuantities() {
-        return cartPage.getAllQuantities();
+        return driver.findElements(CartPageUI.QUANTITIES)
+                .stream()
+                .map(WebElement::getText)
+                .toList();
     }
-    public String getCartProductPrice(String name) {
-        return cartPage.getPriceByProductName(name);
+
+    public String getCartProductPrice(String productName) {
+        List<WebElement> items = driver.findElements(CartPageUI.CARTITEMS);
+        for (WebElement item : items) {
+            String name = item.findElement(CartPageUI.PRODUCT_NAMES).getText();
+            if (name.equals(productName)) {
+                return item.findElement(CartPageUI.PRODUCT_PRICES).getText();
+            }
+        }
+        throw new RuntimeException("Product not found in cart: " + productName);
     }
 
     public int getCartItemCount() {
-        return cartPage.getItemCount();
+        return driver.findElements(CartPageUI.CARTITEMS).size();
     }
 
-    public void removeProductInCart(String name) {
-        cartPage.clickRemove(name);
+    public void removeProductInCart(String productName) {
+        List<WebElement> items = driver.findElements(CartPageUI.CARTITEMS);
+        for (WebElement item : items) {
+            String name = item.findElement(CartPageUI.PRODUCT_NAMES).getText();
+            if (name.equals(productName)) {
+                item.findElement(CartPageUI.REMOVE_BUTTON).click();
+                break;
+            }
+        }
     }
 
     public void clickContinueShopping() {
-        cartPage.clickContinueShopping();
+        cartPage.click(CartPageUI.CONTINUE_SHOPPING_BUTTON);
     }
+
     public boolean isOnCartPage() {
-        return cartPage.getPageTitle().equals("Your Cart");
+        return cartPage.getText(CartPageUI.pageTitle).equals("Your Cart");
     }
+
     public void clickCheckout() {
-        cartPage.clickCheckout();
+        cartPage.click(CartPageUI.CHECKOUT_BUTTON);
     }
+
     public boolean isCheckoutButtonDisplayed() {
-        return cartPage.isCheckoutDisplayed();
+        return driver.findElement(CartPageUI.CHECKOUT_BUTTON).isDisplayed();
     }
 
     public boolean isContinueShoppingDisplayed() {
-        return cartPage.isContinueShoppingDisplayed();
+        return driver.findElement(CartPageUI.CONTINUE_SHOPPING_BUTTON).isDisplayed();
     }
 }

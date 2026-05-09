@@ -12,10 +12,12 @@ public class LoginAction {
     }
 
     public void login(String user, String pass) {
-        loginPage.login(user, pass);
+        loginPage.sendKeys(LoginPageUI.USERNAME, user);
+        loginPage.sendKeys(LoginPageUI.PASSWORD, pass);
+        loginPage.click(LoginPageUI.LOGIN_BUTTON);
     }
 
     public String getErrorMessage() {
-        return loginPage.getErrorMessage();
+        return loginPage.getText(LoginPageUI.ERROR_MESSAGE);
     }
 }
